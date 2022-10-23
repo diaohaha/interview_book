@@ -21,15 +21,19 @@
 
 断开连接可以由客户端或者服务端来触发。
 
-1.a->b fin=m 请求断开连接。 b接收到这个报文后处于close_wait状态
-2.ack=m+1
-3.fin
-4.ack
+1.a->b fin=m 请求断开连接。 b接收到这个报文后处于close_wait状态。这个时候表示我不发送了，但是还可以接收。
+2.b->a ack=m+1 这个报文的含义是b告诉a我知道你想断开了，我把我要发的报文发完就断开。
+3.b->a fin=n b处理完后发送fin
+4.a-> ack=n+1 a再发一个确认报文b就可以立马释放资源。
 
+
+如果发现服务器有很多Close_Wait的链接，会是什么原因造成的。
+
+close_wait是被动关闭socket，但是服务器没有发fin包，一般是程序编写错误，因为这一步一般是应用层代码控制的。 所以可以先查查代码BUG。
 
 ```
 
-![../resource/tcp_close_conn.png](四次)
+![四次挥手](..\resource\tcp_close_conn.png)
 
 
 ### 谈一谈http和https的区别
